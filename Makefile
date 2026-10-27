@@ -3,7 +3,7 @@ NAME    = libmodel.a
 CC      = cc
 CFLAGS  = -Wall -Wextra -Werror -g
 
-SRC     = model.c model_io.c model_forward.c activation.c model_training.c
+SRC     = model.c model_io.c model_forward.c activation.c model_trainer.c
 OBJ     = $(SRC:.c=.o)
 
 all: $(NAME)
@@ -11,7 +11,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	ar rcs $@ $^
 
-%.o: %.c model.h activation.h
+%.o: %.c model.h activation.h model_trainer.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

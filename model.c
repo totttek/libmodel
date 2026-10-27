@@ -1,7 +1,9 @@
 #include "model.h"
 
-void	free_model(t_model *model)
+void	model_free(t_model *model)
 {
+	if (!model)
+		return ;
 	if (model->layers)
 	{
 		for (size_t i = 0; i < model->layer_count; i++)
@@ -14,7 +16,7 @@ void	free_model(t_model *model)
 	free(model);
 }
 
-t_model	*create_model(size_t *shape, size_t size)
+t_model	*model_create(size_t *shape, size_t size)
 {
 	t_model	*new_model;
 
@@ -24,7 +26,7 @@ t_model	*create_model(size_t *shape, size_t size)
 	new_model->layer_count = size - 1;
 	new_model->layers = calloc(new_model->layer_count, sizeof(t_layer));
 	if (!new_model->layers)
-		return(free_model(new_model), NULL);
+		return(model_free(new_model), NULL);
 	for (size_t i = 0; i < new_model->layer_count; i++)
 	{
 		new_model->layers[i].l_inputs = shape[i];
@@ -32,7 +34,7 @@ t_model	*create_model(size_t *shape, size_t size)
 		new_model->layers[i].w = calloc(shape[i] * shape[i + 1], sizeof(double));
 		new_model->layers[i].b = calloc(shape[i + 1], sizeof(double));
 		if (!new_model->layers[i].w || !new_model->layers[i].b)
-			return (free_model(new_model), NULL);
+			return (model_free(new_model), NULL);
 	}
 	return (new_model);
 }

@@ -21,7 +21,7 @@ typedef struct	s_act_funs
 	t_act_backward	backward_fun;
 }				t_act_funs;
 
-const t_act_funs	*get_activation(t_activations activation);
+const t_act_funs	*activation_get(t_activations activation);
 int	activation_from_name(const char *name, t_activations *out);
 
 #endif

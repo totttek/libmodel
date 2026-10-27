@@ -10,7 +10,7 @@ static void	backward_sigmoid(double *z, double *incoming, double *out, double *d
 {
 	for (size_t i = 0; i < size; i++)
 		delta[i] = incoming[i] * out[i] * (1.0 - out[i]);
-	
+
 	(void)z;
 }
 
@@ -19,7 +19,7 @@ static const t_act_funs	act_funs[ACT_COUNT] =
 	[ACT_SIGMOID] = { "sigmoid", sigmoid, backward_sigmoid}
 };
 
-const t_act_funs	*get_activation(t_activations activation)
+const t_act_funs	*activation_get(t_activations activation)
 {
 	if (activation < ACT_COUNT)
 		return(act_funs + activation);

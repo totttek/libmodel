@@ -22,9 +22,9 @@ cc my_program.o -L path/to/libmodel -lmodel -lm -o my_program
 | File | Contents |
 |---|---|
 | `model.h` | public structs and functions |
-| `model.c` | `create_model`, `free_model` |
-| `model_io.c` | `load_model` and its internal parsing helpers |
-| `model_forward.c` | `predict_neuron`, `forward` |
+| `model.c` | `model_create`, `model_free` |
+| `model_io.c` | `model_load` and its internal parsing helpers |
+| `model_forward.c` | `model_neuron_z`, `model_forward` |
 
 ## Data layout
 
@@ -38,27 +38,27 @@ typedef struct s_model { t_layer *layers; size_t layer_count; } t_model;
 ## API
 
 ```c
-t_model *create_model(size_t *shape, size_t size);
+t_model *model_create(size_t *shape, size_t size);
 ```
 Allocates a model with every weight and bias set to 0. `shape` lists the layer widths, input first (e.g. `{3, 2, 1}` gives 2 layers: 3→2 and 2→1). `size` is the number of entries in `shape` and must be at least 2. Returns `NULL` on allocation failure.
 
 ```c
-t_model *load_model(char *filename);
+t_model *model_load(char *filename);
 ```
 Reads a model file and returns a filled model, or `NULL` if the file can't be opened, is malformed, or doesn't match its own shape line.
 
 ```c
-double *forward(t_model *model, double *input);
+double *model_forward(t_model *model, double *input);
 ```
 Runs the network on `input` (which must have as many values as the first shape entry) and returns a newly allocated array with the last layer's outputs. The caller frees it. Returns `NULL` on allocation failure.
 
 ```c
-double predict_neuron(double *weights, double bias, double *input, size_t size);
+double model_neuron_z(double *weights, double bias, double *input, size_t size);
 ```
-One neuron: `sigmoid(weights · input + bias)`.
+One neuron's raw score: `weights · input + bias` (the activation is applied per layer afterwards).
 
 ```c
-void free_model(t_model *model);
+void model_free(t_model *model);
 ```
 Frees a model, including a partially built one.
 

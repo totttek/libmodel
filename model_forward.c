@@ -1,6 +1,6 @@
 #include "model.h"
 
-double	predict_neuron(double *weights, double bias, double *input, size_t size)
+double	model_neuron_z(double *weights, double bias, double *input, size_t size)
 {
 	double	z = 0;
 
@@ -9,7 +9,7 @@ double	predict_neuron(double *weights, double bias, double *input, size_t size)
 	return (z += bias);
 }
 
-double	*forward(t_model *model, double *input)
+double	*model_forward(t_model *model, double *input)
 {
 	double	*current_input = input;
 	double	*layer_output = NULL;
@@ -26,16 +26,16 @@ double	*forward(t_model *model, double *input)
 		}
 		for (size_t j = 0; j < model->layers[i].l_neurons; j++)
 		{
-			layer_output[j] = predict_neuron(
+			layer_output[j] = model_neuron_z(
 				&model->layers[i].w[j * model->layers[i].l_inputs],
 				model->layers[i].b[j], current_input, model->layers[i].l_inputs);
 		}
-		layer_act = get_activation(model->layers[i].act);
+		layer_act = activation_get(model->layers[i].act);
 		if (!layer_act)
 		{
 			if (current_input != input)
 				free(current_input);
-			return (NULL);
+			return (free(layer_output), NULL);
 		}
 		layer_act->forward_fun(layer_output, layer_output, model->layers[i].l_neurons);
 		if (current_input != input)
