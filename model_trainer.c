@@ -144,3 +144,24 @@ void	trainer_update(t_trainer *trainer, double lr)
 		}
 	}
 }
+
+double	*trainer_output(t_trainer *trainer)
+{
+	return(trainer->l_data[trainer->model->layer_count - 1].out);
+}
+
+double	trainer_loss(t_trainer *trainer, double *target)
+{
+	size_t	neurons = trainer->model->layers[trainer->model->layer_count - 1].l_neurons;
+	double	*p = NULL;
+	double	pc = 0;
+	double	final_loss = 0;
+
+	p = trainer_output(trainer);
+	for (size_t i = 0; i < neurons; i++)
+	{
+		pc = fmax(1e-7, fmin(p[i], 1 - 1e-7));
+		final_loss -= (target[i] * log(pc) + (1 - target[i]) * log(1 - pc));
+	}
+	return (final_loss);
+}
