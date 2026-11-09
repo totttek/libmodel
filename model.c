@@ -38,3 +38,24 @@ t_model	*model_create(size_t *shape, size_t size)
 	}
 	return (new_model);
 }
+
+void	model_init_random(t_model *model)
+{
+	double range = 0;
+
+	if (!model)
+		return ;
+	for (size_t i = 0; i < model->layer_count; i++)
+	{
+		range = sqrt(6.0 / (double)(model->layers[i].l_neurons + model->layers[i].l_inputs));
+		for (size_t j = 0; j < model->layers[i].l_neurons; j++)
+		{
+			for (size_t k = 0; k < model->layers[i].l_inputs; k++)
+			{
+				model->layers[i].w[j * model->layers[i].l_inputs + k] = 
+					(((double)rand() / RAND_MAX) * 2.0 * range) - range;
+			}
+			model->layers[i].b[j] = 0.0;
+		}
+	}
+}

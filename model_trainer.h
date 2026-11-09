@@ -21,7 +21,6 @@ typedef struct	s_trainer
 
 void		trainer_free(t_trainer *trainer);
 t_trainer	*trainer_create(t_model *model);
-void		model_init_random(t_model *model, double range);
 int			trainer_forward(t_trainer *trainer, double *input);
 int			trainer_backward(t_trainer *trainer, double *target);
 void		trainer_update(t_trainer *trainer, double lr);

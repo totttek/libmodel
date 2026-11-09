@@ -1,7 +1,7 @@
 NAME    = libmodel.a
 
 CC      = cc
-CFLAGS  = -Wall -Wextra -Werror -g
+CFLAGS  = -Wall -Wextra -Werror -O2 -g
 
 SRC     = model.c model_io.c model_forward.c activation.c model_trainer.c
 OBJ     = $(SRC:.c=.o)

@@ -45,24 +45,6 @@ t_trainer	*trainer_create(t_model *model)
 	return (trainer);
 }
 
-void	model_init_random(t_model *model, double range)
-{
-	if (!model)
-		return ;
-	for (size_t i = 0; i < model->layer_count; i++)
-	{
-		for (size_t j = 0; j < model->layers[i].l_neurons; j++)
-		{
-			for (size_t k = 0; k < model->layers[i].l_inputs; k++)
-			{
-				model->layers[i].w[j * model->layers[i].l_inputs + k] = 
-					(((double)rand() / RAND_MAX) * 2.0 * range) - range;
-			}
-			model->layers[i].b[j] = 0.0;
-		}
-	}
-}
-
 static double	*get_input(t_trainer *trainer, size_t layer_index)
 {
 	if (layer_index == 0)

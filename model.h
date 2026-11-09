@@ -38,6 +38,8 @@ void	model_free(t_model *model);
 t_model	*model_load(char *filename);
 int		model_save(t_model *model, char *filename);
 
+void	model_init_random(t_model *model);
+
 /* model_forward.c - inference */
 double	model_neuron_z(double *weights, double bias, double *input, size_t size);
 double	*model_forward(t_model *model, double *input);
