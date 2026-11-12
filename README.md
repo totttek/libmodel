@@ -35,7 +35,7 @@ Include `model.h` for inference only, or `model_trainer.h` (which includes `mode
 A model is an array of layers. Each layer stores its weights as one flat `l_neurons × l_inputs` matrix: neuron `n`'s weights start at `w[n * l_inputs]`, followed by one bias per neuron in `b`, and the layer's activation.
 
 ```c
-typedef struct s_layer { double *w; double *b; size_t l_inputs; size_t l_neurons; t_activations act; } t_layer;
+typedef struct s_layer { double *w; double *b; size_t l_inputs; size_t l_neurons; t_activation act; } t_layer;
 typedef struct s_model { t_layer *layers; size_t layer_count; } t_model;
 ```
 

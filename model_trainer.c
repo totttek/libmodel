@@ -18,30 +18,40 @@ void	trainer_free(t_trainer *trainer)
 	free(trainer);
 }
 
-t_trainer	*trainer_create(t_model *model)
+t_trainer	*trainer_create(t_model *model, t_loss loss)
 {
-	t_trainer	*trainer = calloc(1, sizeof(t_trainer));
+	t_trainer	*trainer = NULL;
 	size_t		max_neurons = 0;
 
+	if (!model)
+		return (NULL);
+	if (loss >= LOSS_COUNT)
+		return (NULL);
+	if (loss == LOSS_BCE && model->layers[model->layer_count - 1].act != ACT_SIGMOID)
+		return (NULL);
+	if (loss == LOSS_CROSS_ENTROPY && model->layers[model->layer_count - 1].act != ACT_SOFTMAX)
+		return (NULL);
+	trainer = calloc(1, sizeof(t_trainer));
 	if (!trainer)
-		return(NULL);
+		return (NULL);
 	trainer->model = model;
 	trainer->l_data = calloc(model->layer_count, sizeof(t_layer_data));
 	if (!trainer->l_data)
-		return(trainer_free(trainer), NULL);
+		return (trainer_free(trainer), NULL);
 	for (size_t i = 0; i < model->layer_count; i++)
 	{
 		trainer->l_data[i].z = calloc(model->layers[i].l_neurons, sizeof(double));
 		trainer->l_data[i].out = calloc(model->layers[i].l_neurons, sizeof(double));
 		trainer->l_data[i].delta = calloc(model->layers[i].l_neurons, sizeof(double));
 		if (!trainer->l_data[i].z || !trainer->l_data[i].out || !trainer->l_data[i].delta)
-			return(trainer_free(trainer), NULL);
+			return (trainer_free(trainer), NULL);
 		if (model->layers[i].l_neurons > max_neurons)
 			max_neurons = model->layers[i].l_neurons;
 	}
 	trainer->incoming = calloc(max_neurons, sizeof(double));
 	if (!trainer->incoming)
-		return(trainer_free(trainer), NULL);
+		return (trainer_free(trainer), NULL);
+	trainer->loss = loss;
 	return (trainer);
 }
 
@@ -132,18 +142,50 @@ double	*trainer_output(t_trainer *trainer)
 	return(trainer->l_data[trainer->model->layer_count - 1].out);
 }
 
+static double	loss_cross_entropy(double *p, double *target, size_t size)
+{
+	double	pc = 0;
+	double	final_loss = 0;
+
+	for (size_t i = 0; i < size; i++)
+	{
+		pc = fmax(1e-7, fmin(p[i], 1 - 1e-7));
+		final_loss -= target[i] * log(pc);
+	}
+	return (final_loss);
+}
+
+static double	loss_bce(double *p, double *target, size_t size)
+{
+	double	pc = 0;
+	double	final_loss = 0;
+
+	for (size_t i = 0; i < size; i++)
+	{
+		pc = fmax(1e-7, fmin(p[i], 1 - 1e-7));
+		final_loss -= (target[i] * log(pc) + (1 - target[i]) * log(1 - pc));
+	}
+	return (final_loss);
+}
+
 double	trainer_loss(t_trainer *trainer, double *target)
 {
 	size_t	neurons = trainer->model->layers[trainer->model->layer_count - 1].l_neurons;
 	double	*p = NULL;
-	double	pc = 0;
 	double	final_loss = 0;
 
 	p = trainer_output(trainer);
-	for (size_t i = 0; i < neurons; i++)
+	switch (trainer->loss)
 	{
-		pc = fmax(1e-7, fmin(p[i], 1 - 1e-7));
-		final_loss -= (target[i] * log(pc) + (1 - target[i]) * log(1 - pc));
+		case LOSS_BCE:
+			final_loss = loss_bce(p, target, neurons);
+			break;
+		case LOSS_CROSS_ENTROPY:
+			final_loss = loss_cross_entropy(p, target, neurons);
+			break;
+		default:
+			final_loss = -1;
+			break;
 	}
 	return (final_loss);
 }

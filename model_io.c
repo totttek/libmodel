@@ -33,11 +33,11 @@ static int	is_correct_version(FILE *file)
 	return (1);
 }
 
-static int	parse_activation(char	**p, t_activations *out)
+static int	parse_activation(char	**p, t_activation *out)
 {
 	char	*str = NULL;
 	size_t	len = 0;
-	t_activations	tmp;
+	t_activation	tmp;
 
 	str = strtok(*p, ",\n");
 	if (!str)

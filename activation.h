@@ -5,11 +5,12 @@
 # include <string.h>
 # include <math.h>
 
-typedef enum
+typedef enum	e_activation
 {
 	ACT_SIGMOID,
+	ACT_SOFTMAX,
 	ACT_COUNT
-}	t_activations;
+}				t_activation;
 
 typedef void	(*t_act_forward)(double *z, double *out, size_t size);
 typedef void	(*t_act_backward)(double *z, double *incoming, double *out, double *delta, size_t size);
@@ -21,7 +22,7 @@ typedef struct	s_act_funs
 	t_act_backward	backward_fun;
 }				t_act_funs;
 
-const t_act_funs	*activation_get(t_activations activation);
-int	activation_from_name(const char *name, t_activations *out);
+const t_act_funs	*activation_get(t_activation activation);
+int	activation_from_name(const char *name, t_activation *out);
 
 #endif

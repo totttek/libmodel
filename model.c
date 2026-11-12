@@ -39,6 +39,11 @@ t_model	*model_create(size_t *shape, size_t size)
 	return (new_model);
 }
 
+void	model_apply_activation(t_model *model, size_t layer, t_activation act)
+{
+	model->layers[layer].act = act;
+}
+
 void	model_init_random(t_model *model)
 {
 	double range = 0;
